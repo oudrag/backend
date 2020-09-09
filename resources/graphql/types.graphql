@@ -1,0 +1,86 @@
+scalar Date
+scalar Time
+scalar Clock
+
+type Empty{
+    id: ID
+}
+
+type Event {
+    title: String!
+    date: Date!
+    time: Clock!
+    importance: Importance
+    repeat: Repeat
+    category: Category
+    tags: [Tag!]!
+    history: [EventLog!]!
+}
+
+interface Repeat {
+    EndsAt: Date
+}
+
+type DailyPattern implements Repeat {
+    EndsAt: Date
+}
+
+type WeeklyPattern implements Repeat {
+    EndsAt: Date
+    DaysOfWeek: [Int!]!
+}
+
+type MonthlyPattern implements Repeat {
+    EndsAt: Date
+    DaysOfMonth: [Int!]!
+}
+
+type YearlyPattern implements Repeat {
+    EndsAt: Date
+    DaysOfYear: [Int!]!
+}
+
+type CustomPattern implements Repeat {
+    EndsAt: Date
+    IntervalDays: Int!
+}
+
+enum Importance {
+    VeryHigh
+    High
+    Medium
+    Low
+    VeryLow
+}
+
+type Category {
+    title: String!
+    icon: String
+    color: String
+}
+
+type Tag {
+    title: String!
+    color: String
+}
+
+type EventLog {
+    action: EventAction!
+    mood: Mood
+    description: String
+    spentTime: Int
+    datetime: Time
+}
+
+enum Mood {
+    Great
+    Good
+    Meh
+    Bad
+    Terrible
+}
+
+enum EventAction {
+    Dismissed
+    Done
+}

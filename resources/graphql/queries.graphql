@@ -1,0 +1,14 @@
+type Query {
+    Today(showDone: Boolean): [Event!]!
+    Event(id: ID): Event!
+    ThreeDays(showDone: Boolean): [Event!]!
+}
+
+input NewEventData {
+    title: String!
+    date: String
+}
+
+type Mutation {
+    NewEvent(input: NewEventData): Event!
+}
