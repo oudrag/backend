@@ -1,0 +1,87 @@
+# Where are all the schema files located? globs are supported eg  src/**/*.graphqls
+schema:
+  - resources/graphql/*.graphql
+
+# Where should the generated server code go?
+exec:
+  filename: internal/platform/gqlcore/core.go
+  package: gqlcore
+
+# Uncomment to enable federation
+# federation:
+#   filename: graph/generated/federation.go
+#   package: generated
+
+# Where should any generated models go?
+model:
+  filename: internal/platform/gqlcore/models_gen.go
+  package: gqlcore
+
+# Where should the resolver implementations go?
+resolver:
+  filename: internal/interface/resolvers/resolver.go
+  package: resolvers
+
+# Optional: turn on use `gqlgen:"fieldName"` tags in your models
+# struct_tag: json
+
+# Optional: turn on to use []Thing instead of []*Thing
+# omit_slice_element_pointers: false
+
+# Optional: set to speed up generation time by not performing a final validation pass.
+# skip_validation: true
+
+# gqlgen will search for any type names in the schema in these go packages
+# if they match it will use them, otherwise it will generate them.
+#autobind:
+#  - "github.com/oudrag/server/graph/model"
+
+# This section declares type mapping between the GraphQL and go type systems
+#
+# The first line in each type will be used as defaults for resolver arguments and
+# modelgen, the others will be allowed when binding to fields. Configure them to
+# your liking
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.ID
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int
+      - github.com/99designs/gqlgen/graphql.Int64
+      - github.com/99designs/gqlgen/graphql.Int32
+  Date:
+    model:
+      - github.com/oudrag/server/internal/platform.Date
+  Clock:
+    model:
+      - github.com/oudrag/server/internal/platform.Clock
+  Repeat:
+    model: github.com/oudrag/server/internal/domain/events.Repeat
+  Category:
+    model: github.com/oudrag/server/internal/domain/events.Category
+  CustomPattern:
+    model: github.com/oudrag/server/internal/domain/events.CustomPattern
+  DailyPattern:
+    model: github.com/oudrag/server/internal/domain/events.DailyPattern
+  Event:
+    model: github.com/oudrag/server/internal/domain/events.Event
+  EventLog:
+    model: github.com/oudrag/server/internal/domain/events.EventLog
+  MonthlyPattern:
+    model: github.com/oudrag/server/internal/domain/events.MonthlyPattern
+  Tag:
+    model: github.com/oudrag/server/internal/domain/events.Tag
+  WeeklyPattern:
+    model: github.com/oudrag/server/internal/domain/events.WeeklyPattern
+  YearlyPattern:
+    model: github.com/oudrag/server/internal/domain/events.YearlyPattern
+  EventAction:
+    model: github.com/oudrag/server/internal/domain/events.EventAction
+  Importance:
+    model: github.com/oudrag/server/internal/domain/events.Importance
+  Mood:
+    model: github.com/oudrag/server/internal/domain/events.Mood
