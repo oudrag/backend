@@ -22,6 +22,14 @@ func (r *Resolver) Mutation() gqlcore.MutationResolver { return &mutationResolve
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() gqlcore.QueryResolver { return &queryResolver{r} }
 
+func (r *Resolver) initializeCustomResolver(i interface{}) error {
+	if needInit, ok := i.(application.HasInit); ok {
+		return needInit.Init(r.ioc)
+	}
+
+	return nil
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Today(ctx context.Context, showDone *bool) ([]*events.Event, error) {
