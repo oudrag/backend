@@ -2,8 +2,6 @@ package cqrs
 
 import (
 	"fmt"
-
-	"github.com/oudrag/server/internal/platform/application"
 )
 
 var (
@@ -12,25 +10,23 @@ var (
 )
 
 type Bus struct {
-	app      application.Container
 	commands map[string]Handler
 	queries  map[string]Handler
 }
 
-func NewBus(app application.Container) *Bus {
+func NewBus() *Bus {
 	return &Bus{
-		app:      app,
 		commands: make(map[string]Handler),
 		queries:  make(map[string]Handler),
 	}
 }
 
-func (b *Bus) RegisterCommands(commands map[string]Handler) {
-	b.commands = commands
+func (b *Bus) AddCommandHandler(name string, handler Handler) {
+	b.commands[name] = handler
 }
 
-func (b *Bus) RegisterQueries(queries map[string]Handler) {
-	b.queries = queries
+func (b *Bus) AddQueryHandler(name string, handler Handler) {
+	b.queries[name] = handler
 }
 
 func (b *Bus) Dispatch(msg *Message) Response {
@@ -47,12 +43,6 @@ func (b *Bus) Dispatch(msg *Message) Response {
 func (b *Bus) runCommandHandler(msg *Message) Response {
 	for name, handler := range b.commands {
 		if msg.Name == name {
-			if needInit, ok := handler.(application.HasInit); ok {
-				if err := needInit.Init(b.app); err != nil {
-					return ErrResponse(err)
-				}
-			}
-
 			return handler.Handle(msg)
 		}
 	}
@@ -63,12 +53,6 @@ func (b *Bus) runCommandHandler(msg *Message) Response {
 func (b *Bus) runQueryHandler(msg *Message) Response {
 	for name, handler := range b.queries {
 		if msg.Name == name {
-			if needInit, ok := handler.(application.HasInit); ok {
-				if err := needInit.Init(b.app); err != nil {
-					return ErrResponse(err)
-				}
-			}
-
 			return handler.Handle(msg)
 		}
 	}
