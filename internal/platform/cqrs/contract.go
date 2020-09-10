@@ -1,6 +1,10 @@
 package cqrs
 
-const BusBinding = "cqrs.bus"
+const (
+	BusBinding      = "cqrs.bus"
+	CommandsBinding = "cqrs.commands"
+	QueriesBinding  = "cqrs.queries"
+)
 
 type Handler interface {
 	Handle(cmd *Message) Response

@@ -3,11 +3,7 @@ package providers
 import (
 	"github.com/oudrag/server/internal/platform/application"
 	"github.com/oudrag/server/internal/platform/cqrs"
-)
-
-var (
-	commands = map[string]cqrs.Handler{}
-	queries  = map[string]cqrs.Handler{}
+	"github.com/oudrag/server/internal/usecase/queries"
 )
 
 type CQRSServiceProvider struct{}
@@ -30,14 +26,33 @@ func (s CQRSServiceProvider) Boot(container application.Container) error {
 }
 
 func (s CQRSServiceProvider) Register(binder application.Binder) {
-	binder.Bind(cqrs.BusBinding, func(app application.Container) (interface{}, error) {
-		bus := cqrs.NewBus()
-		return bus, nil
-	})
+	binder.Bind(cqrs.BusBinding, registerBus)
+	binder.Bind(cqrs.CommandsBinding, registerCommands)
+	binder.Bind(cqrs.QueriesBinding, registerQueries)
+}
+
+func registerBus(_ application.Container) (interface{}, error) {
+	bus := cqrs.NewBus()
+	return bus, nil
+}
+
+func registerCommands(_ application.Container) (interface{}, error) {
+	return map[string]cqrs.Handler{}, nil
+}
+
+func registerQueries(_ application.Container) (interface{}, error) {
+	return map[string]cqrs.Handler{
+		queries.FetchTodayEventsQuery: new(queries.FetchTodayEvents),
+	}, nil
 }
 
 func bootCommands(c application.Container, bus *cqrs.Bus) error {
-	for name, handler := range commands {
+	var commandHandlers map[string]cqrs.Handler
+	if err := c.MakeInto(cqrs.CommandsBinding, &commandHandlers); err != nil {
+		return err
+	}
+
+	for name, handler := range commandHandlers {
 		if needInit, ok := handler.(application.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return err
@@ -51,7 +66,12 @@ func bootCommands(c application.Container, bus *cqrs.Bus) error {
 }
 
 func bootQueries(c application.Container, bus *cqrs.Bus) error {
-	for name, handler := range queries {
+	var queryHandlers map[string]cqrs.Handler
+	if err := c.MakeInto(cqrs.QueriesBinding, &queryHandlers); err != nil {
+		return err
+	}
+
+	for name, handler := range queryHandlers {
 		if needInit, ok := handler.(application.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return err
