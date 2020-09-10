@@ -2,7 +2,7 @@ package routing
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/oudrag/server/internal/platform/app"
+	"github.com/oudrag/server/internal/core/app"
 )
 
 type Route struct {

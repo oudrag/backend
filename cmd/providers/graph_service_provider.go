@@ -2,9 +2,9 @@ package providers
 
 import (
 	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/oudrag/server/internal/core/app"
+	"github.com/oudrag/server/internal/core/gqlcore"
 	"github.com/oudrag/server/internal/interface/resolvers"
-	"github.com/oudrag/server/internal/platform/app"
-	"github.com/oudrag/server/internal/platform/gqlcore"
 )
 
 type GraphServiceProvider struct{}

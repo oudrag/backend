@@ -456,7 +456,6 @@ var sources = []*ast.Source{
 input NewEventData {
     title: String!
     date: String
-
 }
 
 type Mutation {
@@ -563,7 +562,7 @@ func (ec *executionContext) field_Mutation_NewEvent_args(ctx context.Context, ra
 	var arg0 *NewEventData
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithFieldInputContext(ctx, graphql.NewFieldInputWithField("input"))
-		arg0, err = ec.unmarshalONewEventData2ᚖgithubᚗcomᚋoudragᚋserverᚋinternalᚋplatformᚋgqlcoreᚐNewEventData(ctx, tmp)
+		arg0, err = ec.unmarshalONewEventData2ᚖgithubᚗcomᚋoudragᚋserverᚋinternalᚋcoreᚋgqlcoreᚐNewEventData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4241,7 +4240,7 @@ func (ec *executionContext) marshalOMood2ᚖgithubᚗcomᚋoudragᚋserverᚋint
 	return v
 }
 
-func (ec *executionContext) unmarshalONewEventData2ᚖgithubᚗcomᚋoudragᚋserverᚋinternalᚋplatformᚋgqlcoreᚐNewEventData(ctx context.Context, v interface{}) (*NewEventData, error) {
+func (ec *executionContext) unmarshalONewEventData2ᚖgithubᚗcomᚋoudragᚋserverᚋinternalᚋcoreᚋgqlcoreᚐNewEventData(ctx context.Context, v interface{}) (*NewEventData, error) {
 	if v == nil {
 		return nil, nil
 	}

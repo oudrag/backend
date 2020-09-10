@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/oudrag/server/internal/core/app"
+	"github.com/oudrag/server/internal/core/routing"
 	"github.com/oudrag/server/internal/interface/actions"
-	"github.com/oudrag/server/internal/platform/app"
-	"github.com/oudrag/server/internal/platform/routing"
 )
 
 type RoutingServiceProvider struct{}

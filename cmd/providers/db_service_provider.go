@@ -3,7 +3,7 @@ package providers
 import (
 	"fmt"
 
-	"github.com/oudrag/server/internal/platform/app"
+	"github.com/oudrag/server/internal/core/app"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

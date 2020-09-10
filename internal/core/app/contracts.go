@@ -3,9 +3,12 @@ package app
 const (
 	DBConnectionBinding   = "db.connection"
 	GraphServerBinding    = "graph.server"
-	CQRSBusBinding        = "cqrs.bus"
+	CQRSCommandBusBinding = "cqrs.commandBus"
+	CQRSQueryBusBinding   = "cqrs.queryBus"
+	CQRSEventBusBinding   = "cqrs.eventBus"
 	CQRSCommandsBinding   = "cqrs.commands"
 	CQRSQueriesBinding    = "cqrs.queries"
+	CQRSListenersBinding  = "cqrs.listeners"
 	RouterBinding         = "routing.router"
 	RoutesListBinding     = "routing.routes"
 	MiddlewareListBinding = "routing.middleware"
