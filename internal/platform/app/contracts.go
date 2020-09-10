@@ -11,6 +11,14 @@ const (
 	MiddlewareListBinding = "routing.middleware"
 )
 
+const (
+	DBHost     = "DB_HOST"
+	DBPort     = "DB_PORT"
+	DBDatabase = "DB_DATABASE"
+	DBUsername = "DB_USERNAME"
+	DBPassword = "DB_PASSWORD"
+)
+
 // Container is an interface determines application containers behavior.
 type Container interface {
 	Make(abstract string) (interface{}, error)
