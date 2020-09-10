@@ -1,4 +1,4 @@
-package application
+package app
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 
 // Resolver is a function that returns a concrete implementation for an
 // abstraction key.
-type Resolver func(app Container) (interface{}, error)
+type Resolver func(container Container) (interface{}, error)
 
 type binding struct {
 	resolver  Resolver

@@ -6,15 +6,15 @@ import (
 	"context"
 
 	"github.com/oudrag/server/internal/domain/events"
-	"github.com/oudrag/server/internal/platform/application"
+	"github.com/oudrag/server/internal/platform/app"
 	"github.com/oudrag/server/internal/platform/gqlcore"
 )
 
 type Resolver struct {
-	ioc application.Container
+	ioc app.Container
 }
 
-func NewResolver(ioc application.Container) *Resolver { return &Resolver{ioc: ioc} }
+func NewResolver(ioc app.Container) *Resolver { return &Resolver{ioc: ioc} }
 
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() gqlcore.MutationResolver { return &mutationResolver{r} }
@@ -23,7 +23,7 @@ func (r *Resolver) Mutation() gqlcore.MutationResolver { return &mutationResolve
 func (r *Resolver) Query() gqlcore.QueryResolver { return &queryResolver{r} }
 
 func (r *Resolver) initializeCustomResolver(i interface{}) error {
-	if needInit, ok := i.(application.HasInit); ok {
+	if needInit, ok := i.(app.HasInit); ok {
 		return needInit.Init(r.ioc)
 	}
 

@@ -5,20 +5,20 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/oudrag/server/internal/interface/actions"
-	"github.com/oudrag/server/internal/platform/application"
+	"github.com/oudrag/server/internal/platform/app"
 	"github.com/oudrag/server/internal/platform/routing"
 )
 
 type RoutingServiceProvider struct{}
 
-func (s RoutingServiceProvider) Boot(c application.Container) error {
+func (s RoutingServiceProvider) Boot(c app.Container) error {
 	var router *gin.Engine
-	if err := c.MakeInto(application.RouterBinding, &router); err != nil {
+	if err := c.MakeInto(app.RouterBinding, &router); err != nil {
 		return err
 	}
 
 	var routes map[string]*routing.Route
-	if err := c.MakeInto(application.RoutesListBinding, &routes); err != nil {
+	if err := c.MakeInto(app.RoutesListBinding, &routes); err != nil {
 		return err
 	}
 
@@ -27,13 +27,13 @@ func (s RoutingServiceProvider) Boot(c application.Container) error {
 	}
 
 	var middlewares []routing.Handler
-	if err := c.MakeInto(application.MiddlewareListBinding, &middlewares); err != nil {
+	if err := c.MakeInto(app.MiddlewareListBinding, &middlewares); err != nil {
 		return err
 	}
 
 	// Load global middlewares
 	for _, m := range middlewares {
-		if needInit, ok := m.(application.HasInit); ok {
+		if needInit, ok := m.(app.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return err
 			}
@@ -54,26 +54,26 @@ func (s RoutingServiceProvider) Boot(c application.Container) error {
 	return router.Run()
 }
 
-func (s RoutingServiceProvider) Register(binder application.Binder) {
-	binder.Singleton(application.RouterBinding, registerRouter)
-	binder.Singleton(application.RoutesListBinding, registerRoutes)
-	binder.Singleton(application.MiddlewareListBinding, registerGlobalMiddlewares)
+func (s RoutingServiceProvider) Register(binder app.Binder) {
+	binder.Singleton(app.RouterBinding, registerRouter)
+	binder.Singleton(app.RoutesListBinding, registerRoutes)
+	binder.Singleton(app.MiddlewareListBinding, registerGlobalMiddlewares)
 }
 
-func registerRouter(_ application.Container) (interface{}, error) {
+func registerRouter(_ app.Container) (interface{}, error) {
 	router := gin.Default()
 	router.RedirectTrailingSlash = true
 
 	return router, nil
 }
 
-func registerRoutes(_ application.Container) (interface{}, error) {
+func registerRoutes(_ app.Container) (interface{}, error) {
 	return map[string]*routing.Route{
 		"/":      routing.NewRoute(routing.Get).HandleWith(new(actions.GraphPlaygroundAction)),
 		"/query": routing.NewRoute(routing.Post).HandleWith(new(actions.GraphServerAction)),
 	}, nil
 }
 
-func registerGlobalMiddlewares(_ application.Container) (interface{}, error) {
+func registerGlobalMiddlewares(_ app.Container) (interface{}, error) {
 	return []routing.Handler{}, nil
 }

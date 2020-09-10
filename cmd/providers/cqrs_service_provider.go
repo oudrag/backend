@@ -1,16 +1,16 @@
 package providers
 
 import (
-	"github.com/oudrag/server/internal/platform/application"
+	"github.com/oudrag/server/internal/platform/app"
 	"github.com/oudrag/server/internal/platform/cqrs"
 	"github.com/oudrag/server/internal/usecase/queries"
 )
 
 type CQRSServiceProvider struct{}
 
-func (s CQRSServiceProvider) Boot(container application.Container) error {
+func (s CQRSServiceProvider) Boot(container app.Container) error {
 	var bus *cqrs.Bus
-	if err := container.MakeInto(application.CQRSBusBinding, &bus); err != nil {
+	if err := container.MakeInto(app.CQRSBusBinding, &bus); err != nil {
 		return err
 	}
 
@@ -25,35 +25,35 @@ func (s CQRSServiceProvider) Boot(container application.Container) error {
 	return nil
 }
 
-func (s CQRSServiceProvider) Register(binder application.Binder) {
-	binder.Singleton(application.CQRSBusBinding, registerBus)
-	binder.Singleton(application.CQRSCommandsBinding, registerCommands)
-	binder.Singleton(application.CQRSQueriesBinding, registerQueries)
+func (s CQRSServiceProvider) Register(binder app.Binder) {
+	binder.Singleton(app.CQRSBusBinding, registerBus)
+	binder.Singleton(app.CQRSCommandsBinding, registerCommands)
+	binder.Singleton(app.CQRSQueriesBinding, registerQueries)
 }
 
-func registerBus(_ application.Container) (interface{}, error) {
+func registerBus(_ app.Container) (interface{}, error) {
 	bus := cqrs.NewBus()
 	return bus, nil
 }
 
-func registerCommands(_ application.Container) (interface{}, error) {
+func registerCommands(_ app.Container) (interface{}, error) {
 	return map[string]cqrs.Handler{}, nil
 }
 
-func registerQueries(_ application.Container) (interface{}, error) {
+func registerQueries(_ app.Container) (interface{}, error) {
 	return map[string]cqrs.Handler{
 		queries.FetchTodayEventsQuery: new(queries.FetchTodayEvents),
 	}, nil
 }
 
-func bootCommands(c application.Container, bus *cqrs.Bus) error {
+func bootCommands(c app.Container, bus *cqrs.Bus) error {
 	var commandHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(application.CQRSCommandsBinding, &commandHandlers); err != nil {
+	if err := c.MakeInto(app.CQRSCommandsBinding, &commandHandlers); err != nil {
 		return err
 	}
 
 	for name, handler := range commandHandlers {
-		if needInit, ok := handler.(application.HasInit); ok {
+		if needInit, ok := handler.(app.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return err
 			}
@@ -65,14 +65,14 @@ func bootCommands(c application.Container, bus *cqrs.Bus) error {
 	return nil
 }
 
-func bootQueries(c application.Container, bus *cqrs.Bus) error {
+func bootQueries(c app.Container, bus *cqrs.Bus) error {
 	var queryHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(application.CQRSQueriesBinding, &queryHandlers); err != nil {
+	if err := c.MakeInto(app.CQRSQueriesBinding, &queryHandlers); err != nil {
 		return err
 	}
 
 	for name, handler := range queryHandlers {
-		if needInit, ok := handler.(application.HasInit); ok {
+		if needInit, ok := handler.(app.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return err
 			}

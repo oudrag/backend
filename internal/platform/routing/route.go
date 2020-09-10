@@ -2,7 +2,7 @@ package routing
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/oudrag/server/internal/platform/application"
+	"github.com/oudrag/server/internal/platform/app"
 )
 
 type Route struct {
@@ -20,10 +20,10 @@ func (r *Route) HandleWith(handlers ...Handler) *Route {
 	return r
 }
 
-func (r *Route) Handlers(c application.Container) ([]gin.HandlerFunc, error) {
+func (r *Route) Handlers(c app.Container) ([]gin.HandlerFunc, error) {
 	handlers := make([]gin.HandlerFunc, len(r.handlers))
 	for i, action := range r.handlers {
-		if needInit, ok := action.(application.HasInit); ok {
+		if needInit, ok := action.(app.HasInit); ok {
 			if err := needInit.Init(c); err != nil {
 				return nil, err
 			}
