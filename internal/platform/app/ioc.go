@@ -94,6 +94,10 @@ func (a *IoC) Boot() (err error) {
 		return nil
 	}
 
+	if err := LoadEnv(); err != nil {
+		return err
+	}
+
 	a.registerServices()
 	err = a.runServices()
 	a.Booted = true
