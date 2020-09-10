@@ -1,5 +1,7 @@
 package cqrs
 
+const BusBinding = "cqrs.bus"
+
 type Handler interface {
 	Handle(cmd *Message) Response
 }

@@ -5,8 +5,6 @@ import (
 	"github.com/oudrag/server/internal/platform/cqrs"
 )
 
-const CQRSBusBinding = "cqrs.bus"
-
 var (
 	commands = map[string]cqrs.Handler{}
 	queries  = map[string]cqrs.Handler{}
@@ -14,9 +12,9 @@ var (
 
 type CQRSServiceProvider struct{}
 
-func (c CQRSServiceProvider) Boot(container application.Container) error {
+func (s CQRSServiceProvider) Boot(container application.Container) error {
 	var bus *cqrs.Bus
-	if err := container.MakeInto(CQRSBusBinding, &bus); err != nil {
+	if err := container.MakeInto(cqrs.BusBinding, &bus); err != nil {
 		return err
 	}
 
@@ -31,8 +29,8 @@ func (c CQRSServiceProvider) Boot(container application.Container) error {
 	return nil
 }
 
-func (c CQRSServiceProvider) Register(binder application.Binder) {
-	binder.Bind(CQRSBusBinding, func(app application.Container) (interface{}, error) {
+func (s CQRSServiceProvider) Register(binder application.Binder) {
+	binder.Bind(cqrs.BusBinding, func(app application.Container) (interface{}, error) {
 		bus := cqrs.NewBus()
 		return bus, nil
 	})
