@@ -10,7 +10,7 @@ import (
 type GraphServiceProvider struct{}
 
 func (s GraphServiceProvider) Register(binder application.Binder) {
-	binder.Bind(gqlcore.ServerBinding, func(app application.Container) (interface{}, error) {
+	binder.Singleton(gqlcore.ServerBinding, func(app application.Container) (interface{}, error) {
 		r := resolvers.NewResolver(app)
 		srv := handler.NewDefaultServer(gqlcore.NewExecutableSchema(gqlcore.Config{Resolvers: r}))
 

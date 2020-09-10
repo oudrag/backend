@@ -26,9 +26,9 @@ func (s CQRSServiceProvider) Boot(container application.Container) error {
 }
 
 func (s CQRSServiceProvider) Register(binder application.Binder) {
-	binder.Bind(cqrs.BusBinding, registerBus)
-	binder.Bind(cqrs.CommandsBinding, registerCommands)
-	binder.Bind(cqrs.QueriesBinding, registerQueries)
+	binder.Singleton(cqrs.BusBinding, registerBus)
+	binder.Singleton(cqrs.CommandsBinding, registerCommands)
+	binder.Singleton(cqrs.QueriesBinding, registerQueries)
 }
 
 func registerBus(_ application.Container) (interface{}, error) {
