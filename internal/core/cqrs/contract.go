@@ -1,7 +1,21 @@
 package cqrs
 
+import "fmt"
+
+var (
+	HandlerNotFoundErr = fmt.Errorf("no handler found for this message")
+	InvalidMessageErr  = fmt.Errorf("invalid message passed to bus")
+)
+
 type Handler interface {
 	Handle(cmd *Message) Response
+}
+
+// Listener is an interface for creating simple async listeners
+type Listener interface {
+	Name() string
+	Listen(event *Message) error
+	Interested(event *Message) bool
 }
 
 // Response determines command dispatching return type

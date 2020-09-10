@@ -1,38 +1,44 @@
 package providers
 
 import (
-	"github.com/oudrag/server/internal/platform/app"
-	"github.com/oudrag/server/internal/platform/cqrs"
+	"github.com/oudrag/server/internal/core/app"
+	"github.com/oudrag/server/internal/core/cqrs"
 	"github.com/oudrag/server/internal/usecase/queries"
 )
 
 type CQRSServiceProvider struct{}
 
 func (s CQRSServiceProvider) Boot(container app.Container) error {
-	var bus *cqrs.Bus
-	if err := container.MakeInto(app.CQRSBusBinding, &bus); err != nil {
+	if err := bootCommands(container); err != nil {
 		return err
 	}
-
-	if err := bootCommands(container, bus); err != nil {
+	if err := bootQueries(container); err != nil {
 		return err
 	}
-
-	if err := bootQueries(container, bus); err != nil {
-		return err
-	}
-
-	return nil
+	return bootListeners(container)
 }
 
 func (s CQRSServiceProvider) Register(binder app.Binder) {
-	binder.Singleton(app.CQRSBusBinding, registerBus)
+	binder.Singleton(app.CQRSCommandBusBinding, registerCommandBus)
+	binder.Singleton(app.CQRSQueryBusBinding, registerQueryBus)
+	binder.Singleton(app.CQRSEventBusBinding, registerEventBus)
 	binder.Singleton(app.CQRSCommandsBinding, registerCommands)
 	binder.Singleton(app.CQRSQueriesBinding, registerQueries)
+	binder.Singleton(app.CQRSListenersBinding, registerListeners)
 }
 
-func registerBus(_ app.Container) (interface{}, error) {
-	bus := cqrs.NewBus()
+func registerCommandBus(_ app.Container) (interface{}, error) {
+	bus := cqrs.NewCommandBus()
+	return bus, nil
+}
+
+func registerQueryBus(_ app.Container) (interface{}, error) {
+	bus := cqrs.NewQueryBus()
+	return bus, nil
+}
+
+func registerEventBus(_ app.Container) (interface{}, error) {
+	bus := cqrs.NewEventBus()
 	return bus, nil
 }
 
@@ -46,7 +52,16 @@ func registerQueries(_ app.Container) (interface{}, error) {
 	}, nil
 }
 
-func bootCommands(c app.Container, bus *cqrs.Bus) error {
+func registerListeners(_ app.Container) (interface{}, error) {
+	return []cqrs.Listener{}, nil
+}
+
+func bootCommands(c app.Container) error {
+	var bus cqrs.CommandBus
+	if err := c.MakeInto(app.CQRSCommandBusBinding, &bus); err != nil {
+		return err
+	}
+
 	var commandHandlers map[string]cqrs.Handler
 	if err := c.MakeInto(app.CQRSCommandsBinding, &commandHandlers); err != nil {
 		return err
@@ -59,13 +74,18 @@ func bootCommands(c app.Container, bus *cqrs.Bus) error {
 			}
 		}
 
-		bus.AddCommandHandler(name, handler)
+		bus.AddHandler(name, handler)
 	}
 
 	return nil
 }
 
-func bootQueries(c app.Container, bus *cqrs.Bus) error {
+func bootQueries(c app.Container) error {
+	var bus cqrs.QueryBus
+	if err := c.MakeInto(app.CQRSQueryBusBinding, &bus); err != nil {
+		return err
+	}
+
 	var queryHandlers map[string]cqrs.Handler
 	if err := c.MakeInto(app.CQRSQueriesBinding, &queryHandlers); err != nil {
 		return err
@@ -78,7 +98,31 @@ func bootQueries(c app.Container, bus *cqrs.Bus) error {
 			}
 		}
 
-		bus.AddQueryHandler(name, handler)
+		bus.AddHandler(name, handler)
+	}
+
+	return nil
+}
+
+func bootListeners(c app.Container) error {
+	var bus cqrs.EventBus
+	if err := c.MakeInto(app.CQRSEventBusBinding, &bus); err != nil {
+		return err
+	}
+
+	var listeners []cqrs.Listener
+	if err := c.MakeInto(app.CQRSListenersBinding, &listeners); err != nil {
+		return err
+	}
+
+	for _, listener := range listeners {
+		if needInit, ok := listener.(app.HasInit); ok {
+			if err := needInit.Init(c); err != nil {
+				return err
+			}
+		}
+
+		bus.Subscribe(listener)
 	}
 
 	return nil
