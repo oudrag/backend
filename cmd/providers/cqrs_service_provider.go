@@ -57,7 +57,7 @@ func registerListeners(_ app.Container) (interface{}, error) {
 }
 
 func bootCommands(c app.Container) error {
-	var bus cqrs.CommandBus
+	var bus *cqrs.CommandBus
 	if err := c.MakeInto(app.CQRSCommandBusBinding, &bus); err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func bootCommands(c app.Container) error {
 }
 
 func bootQueries(c app.Container) error {
-	var bus cqrs.QueryBus
+	var bus *cqrs.QueryBus
 	if err := c.MakeInto(app.CQRSQueryBusBinding, &bus); err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func bootQueries(c app.Container) error {
 }
 
 func bootListeners(c app.Container) error {
-	var bus cqrs.EventBus
+	var bus *cqrs.EventBus
 	if err := c.MakeInto(app.CQRSEventBusBinding, &bus); err != nil {
 		return err
 	}
