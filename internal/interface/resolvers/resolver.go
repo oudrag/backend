@@ -5,9 +5,9 @@ package resolvers
 import (
 	"context"
 
+	"github.com/oudrag/server/internal/core/app"
+	"github.com/oudrag/server/internal/core/gqlcore"
 	"github.com/oudrag/server/internal/domain/events"
-	"github.com/oudrag/server/internal/platform/app"
-	"github.com/oudrag/server/internal/platform/gqlcore"
 )
 
 type Resolver struct {
@@ -33,7 +33,13 @@ func (r *Resolver) initializeCustomResolver(i interface{}) error {
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Today(ctx context.Context, showDone *bool) ([]*events.Event, error) {
-	panic("not implemented")
+	handler := new(TodayQueryHandler)
+	err := r.initializeCustomResolver(handler)
+	if err != nil {
+		return nil, err
+	}
+
+	return handler.Run(ctx, showDone)
 }
 
 func (r *queryResolver) Event(ctx context.Context, id *string) (*events.Event, error) {

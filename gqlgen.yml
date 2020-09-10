@@ -4,7 +4,7 @@ schema:
 
 # Where should the generated server code go?
 exec:
-  filename: internal/platform/gqlcore/core.go
+  filename: internal/core/gqlcore/core.go
   package: gqlcore
 
 # Uncomment to enable federation
@@ -14,7 +14,7 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: internal/platform/gqlcore/models_gen.go
+  filename: internal/core/gqlcore/models_gen.go
   package: gqlcore
 
 # Where should the resolver implementations go?

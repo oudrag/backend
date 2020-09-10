@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/oudrag/server/cmd/providers"
-	"github.com/oudrag/server/internal/platform/app"
+	"github.com/oudrag/server/internal/core/app"
 )
 
 func main() {

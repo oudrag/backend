@@ -3,7 +3,7 @@ package actions
 import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/gin-gonic/gin"
-	"github.com/oudrag/server/internal/platform/app"
+	"github.com/oudrag/server/internal/core/app"
 )
 
 type GraphServerAction struct {
