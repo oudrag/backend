@@ -2,12 +2,6 @@ package routing
 
 import "github.com/gin-gonic/gin"
 
-const (
-	RouterBinding         = "routing.router"
-	RoutesListBinding     = "routing.routes"
-	MiddlewareListBinding = "routing.middleware"
-)
-
 // Method is a custom string type for HTTP verbs.
 type Method string
 

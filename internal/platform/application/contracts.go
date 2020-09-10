@@ -1,5 +1,16 @@
 package application
 
+const (
+	DBConnectionBinding   = "db.connection"
+	GraphServerBinding    = "graph.server"
+	CQRSBusBinding        = "cqrs.bus"
+	CQRSCommandsBinding   = "cqrs.commands"
+	CQRSQueriesBinding    = "cqrs.queries"
+	RouterBinding         = "routing.router"
+	RoutesListBinding     = "routing.routes"
+	MiddlewareListBinding = "routing.middleware"
+)
+
 // Container is an interface determines application containers behavior.
 type Container interface {
 	Make(abstract string) (interface{}, error)

@@ -10,7 +10,7 @@ type CQRSServiceProvider struct{}
 
 func (s CQRSServiceProvider) Boot(container application.Container) error {
 	var bus *cqrs.Bus
-	if err := container.MakeInto(cqrs.BusBinding, &bus); err != nil {
+	if err := container.MakeInto(application.CQRSBusBinding, &bus); err != nil {
 		return err
 	}
 
@@ -26,9 +26,9 @@ func (s CQRSServiceProvider) Boot(container application.Container) error {
 }
 
 func (s CQRSServiceProvider) Register(binder application.Binder) {
-	binder.Singleton(cqrs.BusBinding, registerBus)
-	binder.Singleton(cqrs.CommandsBinding, registerCommands)
-	binder.Singleton(cqrs.QueriesBinding, registerQueries)
+	binder.Singleton(application.CQRSBusBinding, registerBus)
+	binder.Singleton(application.CQRSCommandsBinding, registerCommands)
+	binder.Singleton(application.CQRSQueriesBinding, registerQueries)
 }
 
 func registerBus(_ application.Container) (interface{}, error) {
@@ -48,7 +48,7 @@ func registerQueries(_ application.Container) (interface{}, error) {
 
 func bootCommands(c application.Container, bus *cqrs.Bus) error {
 	var commandHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(cqrs.CommandsBinding, &commandHandlers); err != nil {
+	if err := c.MakeInto(application.CQRSCommandsBinding, &commandHandlers); err != nil {
 		return err
 	}
 
@@ -67,7 +67,7 @@ func bootCommands(c application.Container, bus *cqrs.Bus) error {
 
 func bootQueries(c application.Container, bus *cqrs.Bus) error {
 	var queryHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(cqrs.QueriesBinding, &queryHandlers); err != nil {
+	if err := c.MakeInto(application.CQRSQueriesBinding, &queryHandlers); err != nil {
 		return err
 	}
 

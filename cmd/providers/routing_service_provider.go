@@ -13,12 +13,12 @@ type RoutingServiceProvider struct{}
 
 func (s RoutingServiceProvider) Boot(c application.Container) error {
 	var router *gin.Engine
-	if err := c.MakeInto(routing.RouterBinding, &router); err != nil {
+	if err := c.MakeInto(application.RouterBinding, &router); err != nil {
 		return err
 	}
 
 	var routes map[string]*routing.Route
-	if err := c.MakeInto(routing.RoutesListBinding, &routes); err != nil {
+	if err := c.MakeInto(application.RoutesListBinding, &routes); err != nil {
 		return err
 	}
 
@@ -27,7 +27,7 @@ func (s RoutingServiceProvider) Boot(c application.Container) error {
 	}
 
 	var middlewares []routing.Handler
-	if err := c.MakeInto(routing.MiddlewareListBinding, &middlewares); err != nil {
+	if err := c.MakeInto(application.MiddlewareListBinding, &middlewares); err != nil {
 		return err
 	}
 
@@ -55,9 +55,9 @@ func (s RoutingServiceProvider) Boot(c application.Container) error {
 }
 
 func (s RoutingServiceProvider) Register(binder application.Binder) {
-	binder.Singleton(routing.RouterBinding, registerRouter)
-	binder.Singleton(routing.RoutesListBinding, registerRoutes)
-	binder.Singleton(routing.MiddlewareListBinding, registerGlobalMiddlewares)
+	binder.Singleton(application.RouterBinding, registerRouter)
+	binder.Singleton(application.RoutesListBinding, registerRoutes)
+	binder.Singleton(application.MiddlewareListBinding, registerGlobalMiddlewares)
 }
 
 func registerRouter(_ application.Container) (interface{}, error) {
