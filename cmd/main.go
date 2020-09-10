@@ -10,6 +10,8 @@ import (
 func main() {
 	app := application.NewIoC([]application.ServiceProvider{
 		new(providers.GraphServiceProvider),
+		new(providers.CQRSServiceProvider),
+		new(providers.RoutingServiceProvider),
 	})
 
 	log.Fatal(app.Boot())
