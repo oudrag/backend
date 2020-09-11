@@ -17,7 +17,7 @@ func (s RoutingServiceProvider) Boot(c app.Container) error {
 		return err
 	}
 
-	var routes map[string]*routing.Route
+	var routes []*routing.Route
 	if err := c.MakeInto(app.RoutesListBinding, &routes); err != nil {
 		return err
 	}
@@ -42,13 +42,13 @@ func (s RoutingServiceProvider) Boot(c app.Container) error {
 		router.Use(m.Handle)
 	}
 
-	for path, route := range routes {
+	for _, route := range routes {
 		handlers, err := route.Handlers(c)
 		if err != nil {
 			return err
 		}
 
-		router.Handle(route.Method(), path, handlers...)
+		router.Handle(route.Method(), route.Path(), handlers...)
 	}
 
 	return router.Run()
@@ -68,9 +68,9 @@ func registerRouter(_ app.Container) (interface{}, error) {
 }
 
 func registerRoutes(_ app.Container) (interface{}, error) {
-	return map[string]*routing.Route{
-		"/":      routing.NewRoute(routing.Get).HandleWith(new(actions.GraphPlaygroundAction)),
-		"/query": routing.NewRoute(routing.Post).HandleWith(new(actions.GraphServerAction)),
+	return []*routing.Route{
+		routing.Get("/").HandleWith(new(actions.GraphPlaygroundAction)),
+		routing.Post("/query").HandleWith(new(actions.GraphServerAction)),
 	}, nil
 }
 

@@ -11,13 +11,13 @@ func (m Method) String() string {
 
 // List of available HTTP verbs.
 const (
-	Post    Method = "POST"
-	Get     Method = "GET"
-	Head    Method = "HEAD"
-	Put     Method = "PUT"
-	Patch   Method = "PATCH"
-	Delete  Method = "DELETE"
-	Options Method = "OPTIONS"
+	headMethod    Method = "HEAD"
+	optionsMethod Method = "OPTIONS"
+	getMethod     Method = "GET"
+	postMethod    Method = "POST"
+	putMethod     Method = "PUT"
+	patchMethod   Method = "PATCH"
+	deleteMethod  Method = "DELETE"
 )
 
 type Handler interface {

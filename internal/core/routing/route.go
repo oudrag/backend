@@ -6,12 +6,58 @@ import (
 )
 
 type Route struct {
+	path     string
 	method   Method
 	handlers []Handler
 }
 
-func NewRoute(method Method) *Route {
-	return &Route{method: method}
+func Get(path string) *Route {
+	return &Route{
+		path:   path,
+		method: getMethod,
+	}
+}
+
+func Post(path string) *Route {
+	return &Route{
+		path:   path,
+		method: postMethod,
+	}
+}
+
+func Put(path string) *Route {
+	return &Route{
+		path:   path,
+		method: putMethod,
+	}
+}
+
+func Patch(path string) *Route {
+	return &Route{
+		path:   path,
+		method: patchMethod,
+	}
+}
+
+func Delete(path string) *Route {
+	return &Route{
+		path:   path,
+		method: deleteMethod,
+	}
+}
+
+func Head(path string) *Route {
+	return &Route{
+		path:   path,
+		method: headMethod,
+	}
+}
+
+func Options(path string) *Route {
+	return &Route{
+		path:   path,
+		method: optionsMethod,
+	}
 }
 
 func (r *Route) HandleWith(handlers ...Handler) *Route {
@@ -33,6 +79,10 @@ func (r *Route) Handlers(c app.Container) ([]gin.HandlerFunc, error) {
 	}
 
 	return handlers, nil
+}
+
+func (r *Route) Path() string {
+	return r.path
 }
 
 func (r *Route) Method() string {
