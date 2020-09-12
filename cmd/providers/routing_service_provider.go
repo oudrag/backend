@@ -7,6 +7,7 @@ import (
 	"github.com/oudrag/server/internal/core/app"
 	"github.com/oudrag/server/internal/core/routing"
 	"github.com/oudrag/server/internal/interface/actions"
+	"github.com/oudrag/server/internal/interface/middleware"
 )
 
 type RoutingServiceProvider struct{}
@@ -71,6 +72,7 @@ func registerRoutes(_ app.Container) (interface{}, error) {
 	return []*routing.Route{
 		routing.Get("/").HandleWith(new(actions.GraphPlaygroundAction)),
 		routing.Post("/query").HandleWith(new(actions.GraphServerAction)),
+		routing.Get("/auth/sso/:service").HandleWith(new(middleware.StateMiddleware), new(actions.AuthSSOAction)),
 	}, nil
 }
 
