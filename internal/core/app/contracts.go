@@ -1,6 +1,7 @@
 package app
 
 const (
+	RedisClientBinding    = "redis.client"
 	DBConnectionBinding   = "db.connection"
 	GraphServerBinding    = "graph.server"
 	CQRSCommandBusBinding = "cqrs.commandBus"
@@ -9,17 +10,27 @@ const (
 	CQRSCommandsBinding   = "cqrs.commands"
 	CQRSQueriesBinding    = "cqrs.queries"
 	CQRSListenersBinding  = "cqrs.listeners"
+	GoogleOAuthBinding    = "google.oauth"
 	RouterBinding         = "routing.router"
 	RoutesListBinding     = "routing.routes"
 	MiddlewareListBinding = "routing.middleware"
 )
 
 const (
+	AppURL = "APP_URL"
+
 	DBHost     = "DB_HOST"
 	DBPort     = "DB_PORT"
 	DBDatabase = "DB_DATABASE"
 	DBUsername = "DB_USERNAME"
 	DBPassword = "DB_PASSWORD"
+
+	RedisHost     = "REDIS_HOST"
+	RedisUsername = "REDIS_USERNAME"
+	RedisPassword = "REDIS_PASSWORD"
+
+	GoogleClientID     = "GOOGLE_CLIENT_ID"
+	GoogleClientSecret = "GOOGLE_CLIENT_SECRET"
 )
 
 // Container is an interface determines application containers behavior.

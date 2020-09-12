@@ -10,7 +10,7 @@ import (
 
 type DatabaseServiceProvider struct{}
 
-func (d DatabaseServiceProvider) Register(binder app.Binder) {
+func (s DatabaseServiceProvider) Register(binder app.Binder) {
 	binder.Singleton(app.DBConnectionBinding, func(c app.Container) (interface{}, error) {
 		return mongo.NewClient(options.Client().ApplyURI(createDSN()))
 	})
