@@ -12,7 +12,7 @@ func (g OAuthServiceProvider) Register(binder app.Binder) {
 	binder.Singleton(app.GoogleOAuthBinding, registerGoogleOAuth)
 }
 
-func registerGoogleOAuth(c app.Container) (interface{}, error) {
+func registerGoogleOAuth(_ app.Container) (interface{}, error) {
 	cid := app.GetEnv(app.GoogleClientID)
 	secret := app.GetEnv(app.GoogleClientSecret)
 

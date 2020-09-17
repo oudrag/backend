@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,15 +10,15 @@ import (
 	"golang.org/x/oauth2"
 )
 
-type AuthSSOAction struct {
+type GetAuthSSOURLAction struct {
 	googleOAuth *oauth2.Config
 }
 
-func (a *AuthSSOAction) Init(c app.Container) error {
+func (a *GetAuthSSOURLAction) Init(c app.Container) error {
 	return c.MakeInto(app.GoogleOAuthBinding, &a.googleOAuth)
 }
 
-func (a *AuthSSOAction) Handle(ctx *gin.Context) {
+func (a *GetAuthSSOURLAction) Handle(ctx *gin.Context) {
 	service := ctx.DefaultQuery("service", "google")
 	v, ok := ctx.Get("token")
 	if !ok {
@@ -36,6 +37,8 @@ func (a *AuthSSOAction) Handle(ctx *gin.Context) {
 		panic("invalid state")
 		return
 	}
+
+	fmt.Println(state)
 
 	switch service {
 	case "google":

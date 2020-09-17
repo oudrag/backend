@@ -72,7 +72,7 @@ func registerRoutes(_ app.Container) (interface{}, error) {
 	return []*routing.Route{
 		routing.Get("/").HandleWith(new(actions.GraphPlaygroundAction)),
 		routing.Post("/query").HandleWith(new(actions.GraphServerAction)),
-		routing.Get("/auth/sso/:service").HandleWith(new(middleware.StateMiddleware), new(actions.AuthSSOAction)),
+		routing.Get("/auth/sso").HandleWith(new(middleware.StateMiddleware), new(actions.GetAuthSSOURLAction)),
 	}, nil
 }
 
