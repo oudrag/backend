@@ -18,7 +18,7 @@ func (a *AuthSSOAction) Init(c app.Container) error {
 }
 
 func (a *AuthSSOAction) Handle(ctx *gin.Context) {
-	service := ctx.Param("service")
+	service := ctx.DefaultQuery("service", "google")
 	v, ok := ctx.Get("token")
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response.JSON{
