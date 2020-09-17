@@ -1,7 +1,6 @@
 package actions
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,6 @@ func (a *GetAuthSSOURLAction) Handle(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response.JSON{
 			Message: "Something went wrong!",
 		})
-		panic("state not found")
 		return
 	}
 
@@ -34,11 +32,8 @@ func (a *GetAuthSSOURLAction) Handle(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, response.JSON{
 			Message: "Something went wrong!",
 		})
-		panic("invalid state")
 		return
 	}
-
-	fmt.Println(state)
 
 	switch service {
 	case "google":
