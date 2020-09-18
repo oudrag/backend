@@ -29,3 +29,11 @@ func NewQuery(name string, p *Payload) *Message {
 		messageType: QueryMessage,
 	}
 }
+
+func NewCommand(name string, p *Payload) *Message {
+	return &Message{
+		Name:        name,
+		payload:     p,
+		messageType: CommandMessage,
+	}
+}
