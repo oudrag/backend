@@ -18,10 +18,6 @@ func (m *Message) Payload() *Payload {
 	return m.payload
 }
 
-func (m *Message) GetAs(key string, v interface{}) error {
-	return m.payload.GetAs(key, v)
-}
-
 func NewQuery(name string, p *Payload) *Message {
 	return &Message{
 		Name:        name,
@@ -35,5 +31,13 @@ func NewCommand(name string, p *Payload) *Message {
 		Name:        name,
 		payload:     p,
 		messageType: CommandMessage,
+	}
+}
+
+func NewEvent(name string, p *Payload) *Message {
+	return &Message{
+		Name:        name,
+		payload:     p,
+		messageType: EventMessage,
 	}
 }

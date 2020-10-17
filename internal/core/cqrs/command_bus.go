@@ -10,7 +10,7 @@ func NewCommandBus() *CommandBus {
 	}
 }
 
-func (b *CommandBus) AddHandler(name string, handler Handler) {
+func (b *CommandBus) RegisterHandler(name string, handler Handler) {
 	b.handlers[name] = handler
 }
 
