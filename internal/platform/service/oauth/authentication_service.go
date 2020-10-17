@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"time"
 
+	"github.com/dgrijalva/jwt-go"
+	"github.com/oudrag/server/internal/core/app"
 	"github.com/oudrag/server/internal/domain/auth"
 	"golang.org/x/oauth2"
 )
@@ -59,4 +62,17 @@ func (a *AuthManager) GetUserDataViaGoogle(code string) (auth.UserData, error) {
 	err = json.Unmarshal(rawData, &userData)
 
 	return userData, err
+}
+
+func (a *AuthManager) GenerateAccessToken(user *auth.User) (string, error) {
+	now := time.Now()
+	claims := Claim{
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: now.AddDate(0, 0, 1).Unix(),
+		},
+		Email:          user.Email,
+		RefreshableTil: now.AddDate(0, 0, 7).Unix(),
+	}
+
+	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(app.GetEnv(app.JWTSecret))
 }
