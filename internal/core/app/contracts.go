@@ -17,7 +17,7 @@ const (
 )
 
 const (
-	AppURL = "APP_URL"
+	BaseUrl = "APP_URL"
 
 	DBHost     = "DB_HOST"
 	DBPort     = "DB_PORT"
