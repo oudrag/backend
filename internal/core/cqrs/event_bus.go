@@ -31,8 +31,8 @@ func (b *EventBus) Publish(msg *Message) error {
 	return nil
 }
 
-func (b *EventBus) Subscribe(listener Listener) {
-	b.listeners = append(b.listeners, listener)
+func (b *EventBus) Subscribe(listener []Listener) {
+	b.listeners = append(b.listeners, listener...)
 }
 
 func (b *EventBus) consume(errCh chan<- error) {

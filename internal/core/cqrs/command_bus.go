@@ -1,5 +1,10 @@
 package cqrs
 
+import (
+	"reflect"
+	"strings"
+)
+
 type CommandBus struct {
 	handlers map[string]Handler
 }
@@ -10,8 +15,14 @@ func NewCommandBus() *CommandBus {
 	}
 }
 
-func (b *CommandBus) RegisterHandler(name string, handler Handler) {
-	b.handlers[name] = handler
+func (b *CommandBus) RegisterHandlers(handlers []Handler) {
+	for _, handler := range handlers {
+		commandName := strings.Replace(
+			reflect.TypeOf(handler).Elem().Name(),
+			"Handler", "", 1,
+		)
+		b.handlers[commandName] = handler
+	}
 }
 
 func (b *CommandBus) Dispatch(msg *Message) Response {

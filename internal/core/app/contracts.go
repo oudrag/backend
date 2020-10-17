@@ -7,9 +7,6 @@ const (
 	CQRSCommandBusBinding = "cqrs.commandBus"
 	CQRSQueryBusBinding   = "cqrs.queryBus"
 	CQRSEventBusBinding   = "cqrs.eventBus"
-	CQRSCommandsBinding   = "cqrs.commands"
-	CQRSQueriesBinding    = "cqrs.queries"
-	CQRSListenersBinding  = "cqrs.listeners"
 	GoogleOAuthBinding    = "google.oauth"
 	RouterBinding         = "routing.router"
 	RoutesListBinding     = "routing.routes"
@@ -31,6 +28,8 @@ const (
 
 	GoogleClientID     = "GOOGLE_CLIENT_ID"
 	GoogleClientSecret = "GOOGLE_CLIENT_SECRET"
+
+	JWTSecret = "JWT_SECRET"
 )
 
 // Container is an interface determines application containers behavior.

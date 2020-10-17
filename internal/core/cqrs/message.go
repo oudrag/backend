@@ -1,5 +1,10 @@
 package cqrs
 
+import (
+	"fmt"
+	"reflect"
+)
+
 type MessageType int
 
 const (
@@ -10,34 +15,46 @@ const (
 
 type Message struct {
 	Name        string
-	payload     *Payload
+	payload     interface{}
 	messageType MessageType
 }
 
-func (m *Message) Payload() *Payload {
+func (m *Message) Payload() interface{} {
 	return m.payload
 }
 
-func NewQuery(name string, p *Payload) *Message {
-	return &Message{
-		Name:        name,
-		payload:     p,
-		messageType: QueryMessage,
+func (m *Message) PayloadAs(i interface{}) error {
+	pt := reflect.TypeOf(m.payload)
+	t := reflect.TypeOf(i).Elem()
+
+	if !pt.AssignableTo(t) {
+		return fmt.Errorf("cannot assign payload (%v) to given variable (%v)", pt, t)
 	}
+
+	reflect.ValueOf(i).Elem().Set(reflect.ValueOf(m.payload))
+	return nil
 }
 
-func NewCommand(name string, p *Payload) *Message {
+func NewCommand(cmd Command) *Message {
 	return &Message{
-		Name:        name,
-		payload:     p,
+		Name:        cmd.GetCommandName(),
+		payload:     cmd,
 		messageType: CommandMessage,
 	}
 }
 
-func NewEvent(name string, p *Payload) *Message {
+func NewQuery(q Query) *Message {
 	return &Message{
-		Name:        name,
-		payload:     p,
+		Name:        q.GetQueryName(),
+		payload:     q,
+		messageType: QueryMessage,
+	}
+}
+
+func NewEvent(e Event) *Message {
+	return &Message{
+		Name:        e.GetEventName(),
+		payload:     e,
 		messageType: EventMessage,
 	}
 }

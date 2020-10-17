@@ -18,6 +18,18 @@ type Listener interface {
 	Interested(event *Message) bool
 }
 
+type Command interface {
+	GetCommandName() string
+}
+
+type Query interface {
+	GetQueryName() string
+}
+
+type Event interface {
+	GetEventName() string
+}
+
 // Response determines command dispatching return type
 type Response struct {
 	err    error

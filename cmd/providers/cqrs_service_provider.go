@@ -3,7 +3,7 @@ package providers
 import (
 	"github.com/oudrag/server/internal/core/app"
 	"github.com/oudrag/server/internal/core/cqrs"
-	"github.com/oudrag/server/internal/usecase/queries"
+	"github.com/oudrag/server/internal/usecase/commands"
 )
 
 type CQRSServiceProvider struct{}
@@ -22,9 +22,6 @@ func (s CQRSServiceProvider) Register(binder app.Binder) {
 	binder.Singleton(app.CQRSCommandBusBinding, registerCommandBus)
 	binder.Singleton(app.CQRSQueryBusBinding, registerQueryBus)
 	binder.Singleton(app.CQRSEventBusBinding, registerEventBus)
-	binder.Singleton(app.CQRSCommandsBinding, registerCommands)
-	binder.Singleton(app.CQRSQueriesBinding, registerQueries)
-	binder.Singleton(app.CQRSListenersBinding, registerListeners)
 }
 
 func registerCommandBus(_ app.Container) (interface{}, error) {
@@ -42,40 +39,15 @@ func registerEventBus(_ app.Container) (interface{}, error) {
 	return bus, nil
 }
 
-func registerCommands(_ app.Container) (interface{}, error) {
-	return map[string]cqrs.Handler{}, nil
-}
-
-func registerQueries(_ app.Container) (interface{}, error) {
-	return map[string]cqrs.Handler{
-		queries.FetchTodayEventsQuery: new(queries.FetchTodayEvents),
-	}, nil
-}
-
-func registerListeners(_ app.Container) (interface{}, error) {
-	return []cqrs.Listener{}, nil
-}
-
 func bootCommands(c app.Container) error {
 	var bus *cqrs.CommandBus
 	if err := c.MakeInto(app.CQRSCommandBusBinding, &bus); err != nil {
 		return err
 	}
 
-	var commandHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(app.CQRSCommandsBinding, &commandHandlers); err != nil {
-		return err
-	}
-
-	for name, handler := range commandHandlers {
-		if needInit, ok := handler.(app.HasInit); ok {
-			if err := needInit.Init(c); err != nil {
-				return err
-			}
-		}
-
-		bus.AddHandler(name, handler)
-	}
+	bus.RegisterHandlers([]cqrs.Handler{
+		new(commands.SignOnUserWithSSOCommandHandler),
+	})
 
 	return nil
 }
@@ -86,20 +58,7 @@ func bootQueries(c app.Container) error {
 		return err
 	}
 
-	var queryHandlers map[string]cqrs.Handler
-	if err := c.MakeInto(app.CQRSQueriesBinding, &queryHandlers); err != nil {
-		return err
-	}
-
-	for name, handler := range queryHandlers {
-		if needInit, ok := handler.(app.HasInit); ok {
-			if err := needInit.Init(c); err != nil {
-				return err
-			}
-		}
-
-		bus.AddHandler(name, handler)
-	}
+	bus.RegisterHandlers([]cqrs.Handler{})
 
 	return nil
 }
@@ -110,20 +69,7 @@ func bootListeners(c app.Container) error {
 		return err
 	}
 
-	var listeners []cqrs.Listener
-	if err := c.MakeInto(app.CQRSListenersBinding, &listeners); err != nil {
-		return err
-	}
-
-	for _, listener := range listeners {
-		if needInit, ok := listener.(app.HasInit); ok {
-			if err := needInit.Init(c); err != nil {
-				return err
-			}
-		}
-
-		bus.Subscribe(listener)
-	}
+	bus.Subscribe([]cqrs.Listener{})
 
 	return nil
 }
