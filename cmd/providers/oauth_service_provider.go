@@ -2,6 +2,7 @@ package providers
 
 import (
 	"github.com/oudrag/server/internal/core/app"
+	"github.com/oudrag/server/internal/core/url"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -20,7 +21,7 @@ func registerGoogleOAuth(_ app.Container) (interface{}, error) {
 		ClientID:     cid,
 		ClientSecret: secret,
 		Endpoint:     google.Endpoint,
-		RedirectURL:  app.GetEnv(app.AppURL) + "/auth/sso/google",
+		RedirectURL:  url.NewAppUrl().AddURI("/auth/sso/google").String(),
 		Scopes: []string{
 			"profile", "email", "openid",
 		},

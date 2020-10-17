@@ -1,7 +1,9 @@
 package providers
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/oudrag/server/internal/core/app"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,9 +13,22 @@ import (
 type DatabaseServiceProvider struct{}
 
 func (s DatabaseServiceProvider) Register(binder app.Binder) {
-	binder.Singleton(app.DBConnectionBinding, func(c app.Container) (interface{}, error) {
-		return mongo.NewClient(options.Client().ApplyURI(createDSN()))
-	})
+	binder.Singleton(app.DBConnectionBinding, registerMongoConnection)
+}
+
+func registerMongoConnection(_ app.Container) (interface{}, error) {
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(createDSN()))
+	if err != nil {
+		return nil, err
+	}
+
+	if err = client.Ping(ctx, nil); err != nil {
+		return nil, err
+	}
+
+	return client.Database(app.GetEnv(app.DBDatabase)), nil
 }
 
 func createDSN() string {
