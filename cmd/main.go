@@ -14,6 +14,7 @@ func main() {
 			new(providers.RedisServiceProvider),
 			new(providers.GraphServiceProvider),
 			new(providers.CQRSServiceProvider),
+			new(providers.RepositoryServiceProvider),
 			new(providers.OAuthServiceProvider),
 			new(providers.RoutingServiceProvider),
 		}).Boot(),
